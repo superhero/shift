@@ -72,6 +72,8 @@ var Shift = ( function()
           get:
             function( namespace )
             {
+              namespace = namespace.toLowerCase();
+              
               if( ! Cache[ namespace ] )
                 throw 'Namespace undefined';
 
@@ -116,7 +118,7 @@ var Shift = ( function()
   // Setting up the event bus
   
   Shift.Service.set(
-    'event-bus',
+    'eventBus',
     /**
      * The event bus is used for triggering events across all the existing 
      * modules
@@ -151,7 +153,7 @@ var Shift = ( function()
   { 
     var ready = function()
     {
-      Shift.Service.get( 'event-bus' ).trigger( 'docReady'  );
+      Shift.Service.get( 'eventBus' ).trigger( 'docReady'  );
     }
     
     if( jQuery )
