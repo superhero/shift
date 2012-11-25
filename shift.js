@@ -156,7 +156,7 @@ var Shift = ( function()
       Shift.Service.get( 'eventBus' ).trigger( 'docReady'  );
     }
     
-    if( jQuery )
+    if( typeof jQuery != 'undefined' )
       jQuery( document ).ready( ready );
 
     else if( window.addEventListener )
