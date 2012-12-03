@@ -89,7 +89,7 @@ var Shift = ( function()
                   return Cache[ namespace ].input;
 
                 default:
-                  throw 'Unrecognized mode';
+                  throw 'Unrecognized mode used in the service manager';
               }
             },
 
@@ -119,31 +119,71 @@ var Shift = ( function()
   
   Shift.Service.set(
     'eventBus',
-    /**
-     * The event bus is used for triggering events across all the existing 
+    
+    /* The event bus is used for triggering events across all the existing 
      * modules
      */
     new function()
     {
       this.trigger = function( event, input )
       {
-        event =  'on' + event[ 0 ].toUpperCase() + event.slice( 1 );
         input = input || null;
 
         var Modules = Shift.Module;
 
         for( var module in Modules )
-          if( Modules[ module ].Presenter )
-            ( function callback( Container )
-            {
-              for( var presenter in Container )
-                if( typeof Container[ presenter ] == 'object' )
-                  callback( Container[ presenter ] )
-              
-                else
-                  if( presenter == event )
-                    Container[ event ]( input );
-            })( Modules[ module ].Presenter );
+          if( Modules[ module ].Settings )
+            if( Modules[ module ].Settings.Router )
+              if( Modules[ module ].Settings.Router[ event ] )
+                ( function callback( Router )
+                {
+                  switch( typeof Router )
+                  {
+                    case 'object':
+                      if( Router instanceof Array )
+                        for( var i = 0; i < Router.length; i++ )
+                          callback( Router[ i ] );
+                      else
+                        for( var i in Router )
+                          callback( Router[ i ] );
+                      break;
+
+                    case 'string':
+                      if( Modules[ module ].Presenter )
+                        ( function callback( presenter, Router )
+                        {
+                          /* This "try-catch" expression will prevent two things
+                           * 
+                           * 1. If the requested presenter dosn't exist it will
+                           * return with no error
+                           * 
+                           * 2. If an exception accures in the presenter this 
+                           * will here be cought and prevent a melt down
+                           * 
+                           * @todo Add a function that logs the problems that 
+                           * occur..
+                           */
+                          try
+                          {
+                            presenter = presenter[ Router.shift() ];
+
+                            Router.length > 0
+                              ? callback( presenter, Router )
+                              : ( typeof presenter == 'function'
+                                ? presenter( input )
+                                : null );
+                          }
+                          catch( e )
+                          {
+                            return;
+                          }
+                        })( Modules[ module ].Presenter, Router.split( '.' ));
+                      break;
+                      
+                    default:
+                      throw 'Unrecognized router type';
+                  }
+                })( Modules[ module ].Settings.Router[ event ] );
       }
     });
   
