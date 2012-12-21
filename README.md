@@ -113,7 +113,7 @@ Shift.Module.Example =
               {
                 Shift.Service.get( 'eventBus' ).trigger(
                   'service.error',
-                  'Couldn't complete email validation' );
+                  'Couldn\'t complete email validation' );
               },
           });
       }
@@ -191,20 +191,20 @@ a bigger module with a full layer scope and such, you could have a file
 architecture looking something like this:
 
  * shift
-   - module
-     + example
-       - model
-         + the-model-name
-           - service.js
-           - mapper.js
-         + the-model-name.js
-       - presenter
-         + ... // Various presenter files
-       - settings
-         + settings.js
-       - view
-         + ... // Various view files
-       - example.js
+   * module
+     * example
+       * model
+         * the-model-name
+           * service.js
+           * mapper.js
+         * the-model-name.js
+       * presenter
+         * ... // Various presenter files
+       * settings
+         * settings.js
+       * view
+         * ... // Various view files
+       * example.js
  * shift.js
 
 So, as you can see, you are able to segregate your code a lot, leading to less
@@ -216,6 +216,5 @@ this readme file I only described the basics. A more detailed index should
 follow on a seperate homepage in the future.
 
 ## Questions
-If you have any questions for me about this script you are more then welcome to
-hit me up with some questions on twitter:
+If you have any questions you're more then welcome to contact me on twitter:
 [ErikLandvall](https://twitter.com/ErikLandvall)
