@@ -51,11 +51,11 @@ presenters listening to that specific event.
 ## Example of use
 An shift module usuly has the following skeleton:
 
- * Settings
-   - Router
- * Presenter
- * Model
- * View
+* Settings
+  * Router
+* Presenter
+* Model
+* View
 
 A functional shift module could look someting like this:
 
@@ -190,22 +190,22 @@ rather smal module and there for also included in only one file. If you create
 a bigger module with a full layer scope and such, you could have a file
 architecture looking something like this:
 
- * shift
-   * module
-     * example
-       * model
-         * the-model-name
-           * service.js
-           * mapper.js
-         * the-model-name.js
-       * presenter
-         * ... // Various presenter files
-       * settings
-         * settings.js
-       * view
-         * ... // Various view files
-       * example.js
- * shift.js
+* shift
+  * module
+    * example
+      * model
+        * the-model-name
+          * service.js
+          * mapper.js
+        * the-model-name.js
+      * presenter
+        * ... // Various presenter files
+      * settings
+        * settings.js
+      * view
+        * ... // Various view files
+      * example.js
+* shift.js
 
 So, as you can see, you are able to segregate your code a lot, leading to less
 clutter of course.
