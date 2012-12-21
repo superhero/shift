@@ -7,7 +7,7 @@
 var Shift = ( function()
 {
   var
-  
+
   /**
    * The core object that will be returned in the end
    */
@@ -38,21 +38,21 @@ var Shift = ( function()
 
           /**
            * Set a service that can be acceced through the defined namespace.
-           * 
+           *
            * @param namespace string The desired namespace, will overwrite if
            * namespace already exists.
            * @param input object|function The different modes accepts different
            * type values:
            * service   = object,
            * factory   = function
-           * @param mode string One of the "constants" availible in 
+           * @param mode string One of the "constants" availible in
            * Service.Mode. Defaults to Service.Mode.SERVICE
            * @type void
            */
           set:
             function( namespace, input, mode )
             {
-              Cache[ namespace.toLowerCase() ] = 
+              Cache[ namespace.toLowerCase() ] =
                 {
                   'mode':
                     mode || this.Mode.SERVICE,
@@ -63,8 +63,8 @@ var Shift = ( function()
             },
 
           /**
-           * Used to retrieve a service from a certain namespace 
-           * 
+           * Used to retrieve a service from a certain namespace
+           *
            * @param namespace string The namespace
            * @exception 'Namespace undefined'
            * @exception 'Unrecognized mode'
@@ -73,7 +73,7 @@ var Shift = ( function()
             function( namespace )
             {
               namespace = namespace.toLowerCase();
-              
+
               if( ! Cache[ namespace ] )
                 throw 'Namespace undefined';
 
@@ -95,7 +95,7 @@ var Shift = ( function()
 
           /**
            * Returns if a namespace is set or not
-           * 
+           *
            * @param namespace string The namespace
            * @return boolean
            */
@@ -108,19 +108,19 @@ var Shift = ( function()
 
         return Manager;
       })(),
-    
+
     /**
      * The module container
      */
     Module: {}
   };
-  
+
   // Setting up the event bus
-  
+
   Shift.Service.set(
     'eventBus',
-    
-    /* The event bus is used for triggering events across all the existing 
+
+    /* The event bus is used for triggering events across all the existing
      * modules
      */
     new function()
@@ -132,70 +132,76 @@ var Shift = ( function()
         var Modules = Shift.Module;
 
         for( var module in Modules )
-          if( Modules[ module ].Settings )
-            if( Modules[ module ].Settings.Router )
-              if( Modules[ module ].Settings.Router[ event ] )
-                ( function callback( Router )
-                {
-                  switch( typeof Router )
-                  {
-                    case 'object':
-                      if( Router instanceof Array )
-                        for( var i = 0; i < Router.length; i++ )
-                          callback( Router[ i ] );
-                      else
-                        for( var i in Router )
-                          callback( Router[ i ] );
-                      break;
+          if( Modules[ module ].Settings
+           && Modules[ module ].Settings.Router
+           && Modules[ module ].Settings.Router[ event ] )
+            ( function callback( Router )
+            {
+              switch( typeof Router )
+              {
+                case 'object':
+                  if( Router instanceof Array )
+                    for( var i = 0; i < Router.length; i++ )
+                      callback( Router[ i ] );
+                  else
+                    for( var i in Router )
+                      callback( Router[ i ] );
+                  break;
 
-                    case 'string':
-                      if( Modules[ module ].Presenter )
-                        ( function callback( presenter, Router )
-                        {
-                          /* This "try-catch" expression will prevent two things
-                           * 
-                           * 1. If the requested presenter dosn't exist it will
-                           * return with no error
-                           * 
-                           * 2. If an exception accures in the presenter this 
-                           * will here be cought and prevent a melt down
-                           * 
-                           * @todo Add a function that logs the problems that 
-                           * occur..
-                           */
-                          try
-                          {
-                            presenter = presenter[ Router.shift() ];
+                case 'string':
+                  if( Modules[ module ].Presenter )
+                    ( function callback( presenter, Router )
+                    {
+                      /* This "try-catch" expression will prevent two things
+                       *
+                       * 1. If the requested presenter dosn't exist it will
+                       * return with no error
+                       *
+                       * 2. If an exception accures in the presenter this will
+                       * here be cought and prevent a melt down
+                       *
+                       * @todo Add a function that logs the problems that
+                       * occur..
+                       */
+                      try
+                      {
+                        presenter = presenter[ Router.shift() ];
 
-                            Router.length > 0
-                              ? callback( presenter, Router )
-                              : ( typeof presenter == 'function'
-                                ? presenter( input )
-                                : null );
-                          }
-                          catch( e )
-                          {
-                            return;
-                          }
-                        })( Modules[ module ].Presenter, Router.split( '.' ));
-                      break;
-                      
-                    default:
-                      throw 'Unrecognized router type';
-                  }
-                })( Modules[ module ].Settings.Router[ event ] );
+                        Router.length > 0
+                          ? callback( presenter, Router )
+                          : ( typeof presenter == 'function'
+                            ? presenter( input )
+                            : null );
+                      }
+                      catch( exception )
+                      {
+                        Shift.Service.get( 'eventBus' ).trigger(
+                          'presenter.error',
+                          { exception :
+                              exception,
+                          
+                            event :
+                              event } );
+                      }
+                    })( Modules[ module ].Presenter, Router.split( '.' ));
+                  break;
+
+                default:
+                  throw 'Unrecognized router type';
+              }
+            })( Modules[ module ].Settings.Router[ event ] );
       }
     });
-  
+
   // Initiation
-  
+
   ( function()
-  { 
+  {
     var ready = function()
     {
-      Shift.Service.get( 'eventBus' ).trigger( 'docReady'  );
+      Shift.Service.get( 'eventBus' ).trigger( 'doc.ready'  );
     }
-    
+
     if( typeof jQuery != 'undefined' )
       jQuery( document ).ready( ready );
 
@@ -205,6 +211,6 @@ var Shift = ( function()
     else if( window.attachEvent )
       window.attachEvent( 'onload', ready );
   })();
-  
+
   return Shift;
 })();
