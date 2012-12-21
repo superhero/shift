@@ -188,26 +188,7 @@ Shift.Module.Example =
 This is just a simple implementation to show you how things could work. It's a
 rather smal module and there for also included in only one file. If you create
 a bigger module with a full layer scope and such, you could have a file
-architecture looking something like this:
-
-* shift
-  * module
-    * example
-      * model
-        * the-model-name
-          * service.js
-          * mapper.js
-        * the-model-name.js
-      * presenter
-        * ... // Various presenter files
-      * settings
-        * settings.js
-      * view
-        * ... // Various view files
-      * example.js
-* shift.js
-
-So, as you can see, you are able to segregate your code a lot, leading to less
+architecture that alows an even betetr code segregation, leading to less
 clutter of course.
 
 ## What more
