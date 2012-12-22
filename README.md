@@ -10,15 +10,15 @@
 This is a module based JavaScript framework using the MVP and event bus
 patterns.
 
-This is a only ment to work as an arktiekture frame. It's not ment to draw you
-away from any framework/library you are currently using. This merly completes
+This is a only meant to work as an architectural frame. It's not meant to draw you
+away from any framework/library you are currently using. This merely completes
 your application with a *(hopefully)* better structure.
 
-I started designing this when I noticed that my frontend coding often ended
-up in spagetti code ones the projects grew.
+I started designing this when I noticed that my front-end coding often ended
+up in spaghetti code ones the projects grew.
 
 ## How it works
-Every module should following the
+Every module should follow the
 [MVP](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter)
 *(Model-View-Presenter)* pattern.
 
@@ -34,7 +34,7 @@ Every module should following the
 ```
 
 You design the modules to function independently. When you need them to
-comunicate you trigger an event in the event bus that routes the event to the
+communicate you trigger an event in the event bus that routes the event to the
 presenters listening to that specific event.
 
 ```
@@ -49,7 +49,7 @@ presenters listening to that specific event.
 ```
 
 ## Example of use
-An shift module usuly has the following skeleton:
+An shift module usually has the following skeleton:
 
 * Settings
   * Router
@@ -57,7 +57,7 @@ An shift module usuly has the following skeleton:
 * Model
 * View
 
-A functional shift module could look someting like this:
+A functional shift module could look something like this:
 
 ```js
 Shift.Module.Example =
@@ -186,15 +186,15 @@ Shift.Module.Example =
 ```
 
 This is just a simple implementation to show you how things could work. It's a
-rather smal module and there for also included in only one file. If you create
+rather small module and there for also included in only one file. If you create
 a bigger module with a full layer scope and such, you could have a file
-architecture that alows an even betetr code segregation, leading to less
+architecture that allows an even better code segregation, leading to less
 clutter of course.
 
 ## What more
 Well there is a few other things in this framework, and even more to come. In
 this readme file I only described the basics. A more detailed index should
-follow on a seperate homepage in the future.
+follow on a separate homepage in the future.
 
 ## Questions
 If you have any questions you're more then welcome to contact me on twitter:
