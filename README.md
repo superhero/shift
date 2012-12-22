@@ -49,7 +49,7 @@ presenters listening to that specific event.
 ```
 
 ## Example of use
-An shift module usually has the following skeleton:
+A shift module usually has the following skeleton:
 
 * Settings
   * Router
@@ -192,7 +192,7 @@ architecture that allows an even better code segregation, leading to less
 clutter of course.
 
 ## What more
-Well there is a few other things in this framework, and even more to come. In
+Well there's a few other things in this framework, and even more to come. In
 this readme file I only described the basics. A more detailed index should
 follow on a separate homepage in the future.
 
