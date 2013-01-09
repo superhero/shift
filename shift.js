@@ -176,11 +176,14 @@ var Shift = ( function()
                       catch( exception )
                       {
                         Shift.Service.get( 'eventBus' ).trigger(
-                          'presenter.error',
-                          { exception :
+                          'error.presenter',
+                          { exception:
                               exception,
-                          
-                            event :
+
+                            module:
+                              module,
+
+                            event:
                               event } );
                       }
                     })( Modules[ module ].Presenter, Router.split( '.' ));
