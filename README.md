@@ -111,7 +111,7 @@ Shift.Module.Example =
             error:
               function()
               {
-                Shift.Service.get( 'eventBus' ).trigger(
+                Shift.Service.get( 'event-bus' ).trigger(
                   'service.error',
                   'Couldn\'t complete email validation' );
               },

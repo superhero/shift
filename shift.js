@@ -118,7 +118,7 @@ var Shift = ( function()
   // Setting up the event bus
 
   Shift.Service.set(
-    'eventBus',
+    'event-bus',
 
     /* The event bus is used for triggering events across all the existing
      * modules
@@ -175,7 +175,7 @@ var Shift = ( function()
                       }
                       catch( exception )
                       {
-                        Shift.Service.get( 'eventBus' ).trigger(
+                        Shift.Service.get( 'event-bus' ).trigger(
                           'error.presenter',
                           { exception:
                               exception,
@@ -202,7 +202,7 @@ var Shift = ( function()
   {
     var ready = function()
     {
-      Shift.Service.get( 'eventBus' ).trigger( 'doc.ready'  );
+      Shift.Service.get( 'event-bus' ).trigger( 'doc.ready' );
     }
 
     if( typeof jQuery != 'undefined' )
