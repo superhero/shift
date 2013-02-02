@@ -49,7 +49,7 @@ presenters listening to that specific event.
                -------------------------------------
 ```
 
-## Example of use
+## Example of use, 1
 In it's most basic form, all you need to define is a module that will be
 triggered when document is ready.
 
