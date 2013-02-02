@@ -4,216 +4,184 @@
   Dual licensed under the MIT and GPL version 3
 */
 
-var Shift = ( function()
+/**
+ * @type Shift
+ */
+function Shift()
 {
-  var
-
   /**
-   * The core object that will be returned in the end
+   * A manager mange services
+   *
+   * @class
    */
-  Shift =
+  function Manager()
   {
-    /**
-     * Service manager
-     * Used similar to a registry but with more functionality
-     */
-    Service :
-      ( function()
-      {
-        var
-        Cache   = {},
-        Manager =
-        {
-          /**
-           * The availible modes
-           */
-          Mode:
-            {
-              SERVICE:
-                'service',
-
-              FACTORY:
-                'factory'
-            },
-
-          /**
-           * Set a service that can be acceced through the defined namespace.
-           *
-           * @param namespace string The desired namespace, will overwrite if
-           * namespace already exists.
-           * @param input object|function The different modes accepts different
-           * type values:
-           * service   = object,
-           * factory   = function
-           * @param mode string One of the "constants" availible in
-           * Service.Mode. Defaults to Service.Mode.SERVICE
-           * @type void
-           */
-          set:
-            function( namespace, input, mode )
-            {
-              Cache[ namespace.toLowerCase() ] =
-                {
-                  'mode':
-                    mode || this.Mode.SERVICE,
-
-                  'input':
-                    input
-                }
-            },
-
-          /**
-           * Used to retrieve a service from a certain namespace
-           *
-           * @param namespace string The namespace
-           * @exception 'Namespace undefined'
-           * @exception 'Unrecognized mode'
-           */
-          get:
-            function( namespace )
-            {
-              namespace = namespace.toLowerCase();
-
-              if( ! Cache[ namespace ] )
-                throw 'Namespace undefined';
-
-              switch( Cache[ namespace ].mode )
-              {
-                case 'service':
-                  return Cache[ namespace ].input;
-
-                case 'factory':
-                  Cache[ namespace ].input = Cache[ namespace ].input();
-                  Cache[ namespace ].mode  = this.Mode.SERVICE;
-
-                  return Cache[ namespace ].input;
-
-                default:
-                  throw 'Unrecognized mode used in the service manager';
-              }
-            },
-
-          /**
-           * Returns if a namespace is set or not
-           *
-           * @param namespace string The namespace
-           * @return boolean
-           */
-          exists:
-            function( namespace )
-            {
-              return !! Cache[ namespace ];
-            }
-        }
-
-        return Manager;
-      })(),
+    var container = {};
 
     /**
-     * The module container
+     * Set a service that can be acceced through the defined namespace.
+     *
+     * @param namespace string The desired namespace, will overwrite if
+     * namespace already exists.
+     * @param service object The service
+     * @type void
      */
-    Module: {}
-  };
-
-  // Setting up the event bus
-
-  Shift.Service.set(
-    'event-bus',
-
-    /* The event bus is used for triggering events across all the existing
-     * modules
-     */
-    new function()
+    this.set = function( namespace, service )
     {
-      this.trigger = function( event, input )
-      {
-        input = input || null;
-
-        var Modules = Shift.Module;
-
-        for( var module in Modules )
-          if( Modules[ module ].Settings
-           && Modules[ module ].Settings.Router
-           && Modules[ module ].Settings.Router[ event ] )
-            ( function callback( Router )
-            {
-              switch( typeof Router )
-              {
-                case 'object':
-                  if( Router instanceof Array )
-                    for( var i = 0; i < Router.length; i++ )
-                      callback( Router[ i ] );
-                  else
-                    for( var i in Router )
-                      callback( Router[ i ] );
-                  break;
-
-                case 'string':
-                  if( Modules[ module ].Presenter )
-                    ( function callback( presenter, Router )
-                    {
-                      /* This "try-catch" expression will prevent two things
-                       *
-                       * 1. If the requested presenter dosn't exist it will
-                       * return with no error
-                       *
-                       * 2. If an exception accures in the presenter this will
-                       * here be cought and prevent a melt down
-                       *
-                       * @todo Add a function that logs the problems that
-                       * occur..
-                       */
-                      try
-                      {
-                        presenter = presenter[ Router.shift() ];
-
-                        Router.length > 0
-                          ? callback( presenter, Router )
-                          : ( typeof presenter == 'function'
-                            ? presenter( input )
-                            : null );
-                      }
-                      catch( exception )
-                      {
-                        Shift.Service.get( 'event-bus' ).trigger(
-                          'error.presenter',
-                          { exception:
-                              exception,
-
-                            module:
-                              module,
-
-                            event:
-                              event } );
-                      }
-                    })( Modules[ module ].Presenter, Router.split( '.' ));
-                  break;
-
-                default:
-                  throw 'Unrecognized router type';
-              }
-            })( Modules[ module ].Settings.Router[ event ] );
-      }
-    });
-
-  // Initiation
-
-  ( function()
-  {
-    var ready = function()
-    {
-      Shift.Service.get( 'event-bus' ).trigger( 'doc.ready' );
+      namespace = namespace.toLowerCase();
+      container[ namespace ] = service;
     }
 
-    if( typeof jQuery != 'undefined' )
-      jQuery( document ).ready( ready );
+    /**
+     * Used to retrieve a service from a certain namespace
+     *
+     * @param namespace string The namespace
+     * @exception 'Namespace undefined'
+     * @return object
+     */
+    this.get = function( namespace )
+    {
+      namespace = namespace.toLowerCase();
 
-    else if( window.addEventListener )
-      window.addEventListener( 'load', ready, false );
+      if( !container[ namespace ] )
+        throw 'Namespace undefined';
 
-    else if( window.attachEvent )
-      window.attachEvent( 'onload', ready );
-  })();
+      return container[ namespace ];
+    }
 
-  return Shift;
-})();
+    /**
+     * Used to retrieve all availible services
+     *
+     * @return object
+     */
+    this.getAll = function()
+    {
+      return container;
+    }
+
+    /**
+     * Is used for removing a service from the manager
+     *
+     * @type void
+     */
+    this.remove = function( ns )
+    {
+      delete container[ ns ];
+    }
+
+    /**
+     * Returns if a namespace is set or not
+     *
+     * @param namespace string The namespace
+     * @return boolean
+     */
+    this.has = function( namespace )
+    {
+      namespace = namespace.toLowerCase();
+
+      return !! container[ namespace ];
+    }
+  }
+
+  /**
+   * The event bus is used for triggering events in the modules
+   *
+   * @class
+   */
+  function EventBus()
+  {
+    this.trigger = function trigger( eventType, data )
+    {
+      for( var module in Shift )
+        if( Shift[ module ].router
+         && Shift[ module ].router[ eventType ] )
+          ( function callback( rout )
+          {
+            switch( typeof rout )
+            {
+              case 'object':
+                if( rout instanceof Array )
+                  for( var i = 0; i < rout.length; i++ )
+                    callback( rout[ i ] );
+
+                else
+                  for( var ns in rout )
+                    callback( rout[ ns ] );
+
+                break;
+
+              case 'string':
+                  /* If an exception accures during dispatch then it will be
+                   * cought here and prevent a total melt down
+                   */
+                  try
+                  {
+                    data = ( Shift[ module ].dispatcher
+                          && Shift[ module ].dispatcher[ rout ] )
+                           ? Shift[ module ].dispatcher[ rout ]( data )
+                           : data;
+
+                    if( Shift[ module ].view
+                     && Shift[ module ].view[ rout ] )
+                        Shift[ module ].view[ rout ]( data );
+                  }
+                  catch( exception )
+                  {
+                    trigger(
+                      'error.dispatch',
+                      { 'exception':
+                          exception,
+
+                        'module':
+                          module,
+
+                        'rout':
+                          rout,
+
+                        'eventType':
+                          eventType } );
+                  }
+                break;
+
+              default:
+                throw 'Unrecognized router type';
+            }
+          } )( Shift[ module ].router[ eventType ] );
+    }
+  }
+
+  var
+  serviceManager = new Manager;
+  serviceManager.set( 'event-bus', new EventBus );
+
+  jQuery( document ).ready(
+    function()
+    {
+      var exceptions = {};
+
+      for( var module in Shift )
+        if( typeof Shift[ module ] == 'function' )
+          try
+          {
+            Shift[ module ] = new Shift[ module ]( serviceManager );
+          }
+          catch( exception )
+          {
+            exceptions[ module ] = exception;
+            delete Shift[ module ];
+          }
+
+      for( var ns in exceptions )
+        serviceManager.get( 'event-bus' ).trigger(
+          'error.bootstrap',
+          { 'exception':
+              exception[ ns ],
+
+            'module':
+              ns } );
+
+      serviceManager.get( 'event-bus' ).trigger( 'shift.ready' );
+    } );
+}
+
+new Shift;

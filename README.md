@@ -4,15 +4,15 @@
 
 *Dual licensed under the MIT and GPL version 3 licenses.*
 
-*Version: 0.2*
+*Version: 0.3*
 
 ## What's this
-This is a module based JavaScript framework using the MVP and event bus
-patterns.
+This is a module based JavaScript framework using an MVP and event bus
+pattern.
 
-This is a only meant to work as an architectural frame. It's not meant to draw you
-away from any framework/library you are currently using. This merely completes
-your application with a *(hopefully)* better structure.
+This is a only meant to work as an architectural frame. It's not meant to draw
+you away from any framework/library you are currently using. This merely
+completes your application with, hopefully, better structure.
 
 I started designing this when I noticed that my front-end coding often ended
 up in spaghetti code ones the projects grew.
@@ -20,7 +20,8 @@ up in spaghetti code ones the projects grew.
 ## How it works
 Every module should follow the
 [MVP](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter)
-*(Model-View-Presenter)* pattern.
+*(Model-View-Presenter)* pattern. **But you are not restricted to only use it
+in this manner!**
 
 ```
                           ---------------
@@ -49,150 +50,244 @@ presenters listening to that specific event.
 ```
 
 ## Example of use
-A shift module usually has the following skeleton:
-
-* Settings
-  * Router
-* Presenter
-* Model
-* View
-
-A functional shift module could look something like this:
+In it's most basic form, all you need to define is a module that will be
+triggered when document is ready.
 
 ```js
-Shift.Module.Example =
+Shift.Foo = function()
 {
-  Settings:
-  {
-    Router :
-      {
-        // The event
-        'doc.ready':
-          // The listener. eg: Shift.Module.Example.Presenter.onDocReady
-          'docReady',
+  // Do stuff..
+}
+```
 
-        'service.error':
-          'error'
-      }
-  },
+### What is happening in the above code snippet?
+We are declaring the `Foo` module while adding it to the `Shift` object. The
+module body is triggered when the document is ready. This process is also
+considered as the module bootstrap process.
 
-  Presenter:
+## Example of use, 2
+A shift module usually has the following skeleton:
+
+* router
+* dispatcher
+* view:
+
+```js
+Shift.Foo = function()
+{
+  this.router =
   {
-    // An action
-    docReady:
+    'shift.ready':
+      'ready'
+  }
+
+  this.dispatcher =
+  {
+    ready:
       function()
       {
-        Shift.Module.Example.View.Email.attachValidation( this.validateEmail );
-      },
-
-    error:
-      function( msg )
-      {
-        Shift.Module.Example.View.showError( msg );
-        // Maybe you wish to set up a log model as well?
-      },
-
-    validateEmail:
-      function( value )
-      {
-        Shift.Module.Example.Model.Email.validate(
-          {
-            value:
-              value,
-
-            success:
-              function( data )
-              {
-                data == 1
-                ? Shift.Module.Example.View.Email.showSuccess()
-                : Shift.Module.Example.View.Email.showError();
-              },
-
-            error:
-              function()
-              {
-                Shift.Service.get( 'event-bus' ).trigger(
-                  'service.error',
-                  'Couldn\'t complete email validation' );
-              },
-          });
+        return 'foo';
       }
-  },
+  }
 
-  Model:
+  this.view =
   {
-    Email:
-    {
-      validate( options )
-        function()
-        {
-          $.ajax(
-          {
-            url:
-              '/validate/email',
-
-            type:
-              'POST',
-
-            data:
-              options.value,
-
-            success:
-              options.success,
-
-            error:
-              options.error
-          });
-        }
-      }
-  },
-
-  View:
-  {
-    Email:
-    {
-      attachValidation:
-        function( action )
-        {
-          $( 'input#email' ).blur(
-            function()
-            {
-              var value = $( this ).val();
-              action( value );
-            }
-        },
-
-      showSuccess:
-        function()
-        {
-          alert( 'Perfect' );
-        },
-
-      showError:
-        function()
-        {
-          alert( 'Try that again please' );
-          $( 'input#email' ).focus();
-        }
-    },
-
-    showError:
-      function( msg )
+    ready:
+      function( data )
       {
-        alert( msg );
+        alert( data );
       }
   }
 }
 ```
 
-This is just a simple implementation to show you how things could work. It's a
-rather small module and there for also included in only one file. If you create
-a bigger module with a full layer scope and such, you could have a file
-architecture that allows an even better code segregation, leading to less
-clutter of course.
+### What is happening in the above code snippet?
+In the framework we hava an `event bus` that triggers the event `shift.ready`
+onece all modules has been bootstrapped.
+When an event is triggered the `event bus` walks through all modules looking
+for a router. If an router is found the `event bus` will attempt to find a
+matching rout. If one is found it will attempt to resolve this to a matching
+action within the dispatcher and/or a matching view. The view retives data that
+the dispatcher returns.
+
+## Example of use, 3
+If you do not need view or dispatcher logic for the event you don't have to
+declare this resolver.
+
+```js
+Shift.Foo = function()
+{
+  this.router =
+  {
+    'shift.ready':
+      'ready'
+  }
+
+  this.view =
+  {
+    ready:
+      function()
+      {
+        alert( 'foo' );
+      }
+  }
+}
+```
+
+### What is happening in the above code snippet?
+We left the rout with only a view logic to resolve. We could also do it the
+other way around and only use dispatcher logic.
+
+## Example of use, 4
+The module will be declared with a `service manager` if the framework is aloud
+to bootstrap the module. The service manager is  where you can store global
+services you wish to use in all or more then one module.
+
+In the service manager we can locate the `event bus` that is used for
+triggering new events.
+
+```js
+Shift.Foo = function( serviceManager )
+{
+  this.router =
+  {
+    'shift.ready':
+      'ready',
+
+    'foo.click':
+      'click'
+  }
+
+  this.dispatcher =
+  {
+    click:
+      function()
+      {
+        alert( 'clicked' );
+      }
+  }
+
+  this.view =
+  {
+    ready:
+      function()
+      {
+        // jQuery
+        $( '#foo' ).click(
+          function()
+          {
+            serviceManager.get( 'event-bus' ).trigger( 'foo.click' )
+          } );
+      }
+  }
+}
+```
+
+### What is happening in the above code snippet?
+Here we first have the bootrap process reciving the `service manager`. We rout
+the ordinary `shift.ready` event to a view where we attach a listener that
+triggers the event `foo.click`. This event is triggered globaly and can be
+picked up by any module. We have one rout defined for this in this module
+router. The rout is beeing resolved and an alert message is triggered.
+
+## Example of use, 5
+We could also provide the router with a list of routes
+
+```js
+Shift.Foo = function( serviceManager )
+{
+  this.router =
+  {
+    'shift.ready':
+      'ready',
+
+    'foo.click':
+      [ 'foo',
+        'bar',
+        'baz' ]
+  }
+
+  this.dispatcher =
+  {
+    foo:
+      function()
+      {
+        alert( 'foo' );
+      },
+
+    bar:
+      function()
+      {
+        alert( 'bar' );
+      },
+
+    baz:
+      function()
+      {
+        alert( 'baz' );
+      }
+  }
+
+  this.view =
+  {
+    ready:
+      function()
+      {
+        // jQuery
+        $( '#foo' ).click(
+          function()
+          {
+            serviceManager.get( 'event-bus' ).trigger( 'foo.click' )
+          } );
+      }
+  }
+}
+```
+
+### What is happening in the above code snippet?
+We added a list of routes that all got triggered in the order they are listed.
+
+## Example of use, 6
+For stability in your code we don't wont one modules logic breaking the hole
+application if an exception is thrown. For this reason the `Shift` frame
+supresses every exception that accures on bootstrap and dispatch.
+
+If we wish to log this in some way we could create an exception module that
+listens for theese error event.
+
+**Warning** If an exception accures in the resolved rout for the
+`error.dispatch` event, an endless loop will accure.
+
+```js
+Shift.Foo = function( serviceManager )
+{
+  this.router =
+  {
+    'error.bootstrap':
+      'error',
+
+    'error.dispatch':
+      'error'
+  }
+
+  this.dispatcher =
+  {
+    error:
+      function( e )
+      {
+        if( console.log )
+          console.log( e );
+      }
+  }
+}
+```
+
+### What is happening in the above code snippet?
+We attached the same listener for both events and basicly loged it in the
+console.
 
 ## What more
-Well there's a few other things in this framework, and even more to come. In
+Well there's a few other things in this frame, and even more to come. In
 this readme file I only described the basics. A more detailed index should
 follow on a separate homepage in the future.
 
