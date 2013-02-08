@@ -275,7 +275,7 @@ Shift.Foo = function( serviceManager )
     error:
       function( e )
       {
-        if( console.log )
+        if( window.console && window.console.log )
           console.log( e );
       }
   }
