@@ -21,7 +21,8 @@ up in spaghetti code ones the projects grew.
 Every module should follow the
 [MVP](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter)
 *(Model-View-Presenter)* pattern.
-*See*:
+
+**See**:
  * [Passive View](http://martinfowler.com/eaaDev/PassiveScreen.html)
  * [Supervising Controller](http://martinfowler.com/eaaDev/SupervisingPresenter.html)
 
