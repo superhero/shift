@@ -10,9 +10,9 @@
 This is a module based JavaScript framework using an MVP and event bus
 pattern.
 
-This is a only meant to work as an architectural frame. It's not meant to draw
-you away from any framework/library you are currently using. This merely
-completes your application with, hopefully, better structure.
+This is only meant to work as an architectural frame. It's not meant to draw
+you away from any library you are currently using. This merely completes your
+application with, hopefully, better structure.
 
 I started designing this when I noticed that my front-end coding often ended
 up in spaghetti code ones the projects grew.
@@ -20,37 +20,15 @@ up in spaghetti code ones the projects grew.
 ## How it works
 Every module should follow the
 [MVP](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter)
-*(Model-View-Presenter)* pattern.
+(Model-View-Presenter) pattern.
 
 **See**:
  * [Passive View](http://martinfowler.com/eaaDev/PassiveScreen.html)
  * [Supervising Controller](http://martinfowler.com/eaaDev/SupervisingPresenter.html)
 
-```
-                          ---------------
-                          |  Presenter  |
-                          ---------------
-                              /      \
-                             /        \
-                     -----------    ----------
-                     |  Model  |    |  View  |
-                     -----------    ----------
-```
-
 You design the modules to operate independently. When you need them to
 communicate you trigger an event in the event bus that routes the event to the
 presenters listening to that specific event.
-
-```
-  -------------    -------------    -------------    -------------
-  |  Module1  |    |  Module2  |    |  Module3  |    |  Module4  |
-  -------------    -------------    -------------    -------------
-              \          \                /          /
-               \          \              /          /
-               -------------------------------------
-               |              Event bus            |
-               -------------------------------------
-```
 
 ## Example of use, 1
 In it's most basic form, all you need to define is a module that will be
