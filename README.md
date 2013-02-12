@@ -20,8 +20,10 @@ up in spaghetti code ones the projects grew.
 ## How it works
 Every module should follow the
 [MVP](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter)
-*(Model-View-Presenter)* pattern. **But you are not restricted to only use it
-in this manner!**
+*(Model-View-Presenter)* pattern.
+*See*:
+ * [Passive View](http://martinfowler.com/eaaDev/PassiveScreen.html)
+ * [Supervising Controller](http://martinfowler.com/eaaDev/SupervisingPresenter.html)
 
 ```
                           ---------------
