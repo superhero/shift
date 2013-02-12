@@ -232,39 +232,46 @@ function Shift()
   serviceManager.set( 'event-bus', new EventBus( Shift ) );
 
   // Initiation process
-  jQuery( document ).ready(
+  var interval = setInterval(
     function()
     {
-      var exceptions = {};
+      // Once the document is ready we can initiate
+      if( document.readyState === 'complete' )
+      {
+        clearInterval( interval );
 
-      // Bootstrapping all the modules that allows it
-      for( var module in Shift )
-        if( typeof Shift[ module ] == 'function' )
-          try
-          {
-            Shift[ module ] = new Shift[ module ]( serviceManager );
-          }
-          catch( exception )
-          {
-            exceptions[ module ] = exception;
-            delete Shift[ module ];
-          }
+        var exceptions = {};
 
-      // If an excpetion occurred during the bootstrap process in any of the
-      // modules then this will trigger an error event
-      for( var ns in exceptions )
-        serviceManager.get( 'event-bus' ).trigger(
-          'error.bootstrap',
-          { 'module':
-              ns,
+        // Bootstrapping all the modules that allows it
+        for( var module in Shift )
+          if( typeof Shift[ module ] == 'function' )
+            try
+            {
+              Shift[ module ] = new Shift[ module ]( serviceManager );
+            }
+            catch( exception )
+            {
+              exceptions[ module ] = exception;
+              delete Shift[ module ];
+            }
 
-            'exception':
-              exception[ ns ] } );
+        // If an excpetion occurred during the bootstrap process in any of the
+        // modules then this will trigger an error event
+        for( var ns in exceptions )
+          serviceManager.get( 'event-bus' ).trigger(
+            'error.bootstrap',
+            { 'module':
+                ns,
 
-      // Once the bootstrap process has finished, an event declaring that
-      // shift is ready is triggerd
-      serviceManager.get( 'event-bus' ).trigger( 'shift.ready' );
-    } );
+              'exception':
+                exception[ ns ] } );
+
+        // Once the bootstrap process has finished, an event declaring that
+        // shift is ready is triggerd
+        serviceManager.get( 'event-bus' ).trigger( 'shift.ready' );
+      }
+    },
+    10 );
 }
 
 new Shift;
