@@ -6,9 +6,9 @@
 
 *Version: Beta 2*
 
-## What's this
-This is a module based JavaScript framework using an MVP and event bus
-pattern.
+## What is this
+This is a module based JavaScript framework using the MVP pattern and an
+event bus for framework event handling.
 
 This is only meant to work as an architectural frame. It's not meant to draw
 you away from any library you are currently using. This merely completes your
