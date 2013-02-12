@@ -37,7 +37,7 @@ Every module should follow the
                      -----------    ----------
 ```
 
-You design the modules to function independently. When you need them to
+You design the modules to operate independently. When you need them to
 communicate you trigger an event in the event bus that routes the event to the
 presenters listening to that specific event.
 
