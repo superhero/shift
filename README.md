@@ -4,7 +4,7 @@
 
 *Dual licensed under the MIT and GPL version 3 licenses.*
 
-*Version: 0.3*
+*Version: Beta 1*
 
 ## What's this
 This is a module based JavaScript framework using an MVP and event bus
