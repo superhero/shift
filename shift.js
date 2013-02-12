@@ -84,81 +84,160 @@ function Shift()
   }
 
   /**
+   * The router provides matching routes, it doesn't dispatch them.
+   *
+   * @class
+   */
+  function Router( scope )
+  {
+    /**
+     * Determines if the event matches the rout
+     *
+     * Expected behavior:
+     *
+     * |------------|------------|--------|
+     * | rout       | event      | match  |
+     * |============|============|========|
+     * | foo.bar    | foo.bar    | true   |
+     * | foo        | foo        | true   |
+     * | foo.*      | foo.bar    | true   |
+     * | *          | *          | true   |
+     * | foo.*      | foo.*      | true   |
+     * | foo.bar    | foo.*      | false  |
+     * | foo        | foo.bar    | false  |
+     * | foo.bar    | foo        | false  |
+     * | foo        | bar        | false  |
+     * |------------|------------|--------|
+     */
+    function match( rout, event )
+    {
+      var match = true;
+
+      rout  = rout.split( '.' );
+      event = event.split( '.' );
+
+      if( rout.length != event.length )
+        match = false;
+
+      for( var i = 0; match && i < event.length; i++ )
+        if( rout[ i ] != event[ i ] && '*' != rout[ i ] )
+          match = false;
+
+      return match;
+    }
+
+    /**
+     * Returns all matching routes
+     *
+     * @exception 'Unrecognized router type'
+     * @return array
+     */
+    this.getRoutes = function( event )
+    {
+      var actions = [];
+
+      for( var module in scope )
+        if( scope[ module ].router )
+          for( var rout in scope[ module ].router )
+            if( match( rout, event ) )
+              ( function callback( rout )
+              {
+                switch( typeof rout )
+                {
+                  case 'object':
+                    if( rout instanceof Array )
+                      for( var i = 0; i < rout.length; i++ )
+                        callback( rout[ i ] );
+
+                    else
+                      for( var ns in rout )
+                        callback( rout[ ns ] );
+
+                    break;
+
+                  case 'string':
+                    actions.push(
+                      { 'module':
+                          module,
+
+                        'rout':
+                          rout } );
+                    break;
+
+                  default:
+                    throw 'Unrecognized router type';
+                }
+              } )( scope[ module ].router[ rout ] );
+
+      return actions;
+    }
+  }
+
+  /**
    * The event bus is used for triggering events in the modules
    *
    * @class
    */
-  function EventBus()
+  function EventBus( scope )
   {
+    var router = new Router( scope );
+
+    /**
+     * Triggers an event
+     *
+     * @exception 'Unrecognized router type'
+     * @type void
+     */
     this.trigger = function trigger( eventType, data )
     {
-      for( var module in Shift )
-        if( Shift[ module ].router
-         && Shift[ module ].router[ eventType ] )
-          ( function callback( rout )
-          {
-            switch( typeof rout )
-            {
-              case 'object':
-                if( rout instanceof Array )
-                  for( var i = 0; i < rout.length; i++ )
-                    callback( rout[ i ] );
+      var routes = router.getRoutes( eventType );
 
-                else
-                  for( var ns in rout )
-                    callback( rout[ ns ] );
+      for( var i = 0; i < routes.length; i++ )
+        try
+        {
+          var module = Shift[ routes[ i ].module ];
 
-                break;
+          data = ( module.dispatcher
+                && module.dispatcher[ routes[ i ].rout ] )
+                 ? module.dispatcher[ routes[ i ].rout ]( data )
+                 : data;
 
-              case 'string':
-                  /* If an exception accures during dispatch then it will be
-                   * cought here and prevent a total melt down
-                   */
-                  try
-                  {
-                    data = ( Shift[ module ].dispatcher
-                          && Shift[ module ].dispatcher[ rout ] )
-                           ? Shift[ module ].dispatcher[ rout ]( data )
-                           : data;
+          if( module.view
+           && module.view[ routes[ i ].rout ] )
+              module.view[ routes[ i ].rout ]( data );
+        }
+        catch( exception )
+        {
+          trigger(
+            'error.dispatch',
+            { 'module':
+                routes[ i ].module,
 
-                    if( Shift[ module ].view
-                     && Shift[ module ].view[ rout ] )
-                        Shift[ module ].view[ rout ]( data );
-                  }
-                  catch( exception )
-                  {
-                    trigger(
-                      'error.dispatch',
-                      { 'exception':
-                          exception,
+              'rout':
+                routes[ i ].rout,
 
-                        'module':
-                          module,
+              'eventType':
+                eventType,
 
-                        'rout':
-                          rout,
-
-                        'eventType':
-                          eventType } );
-                  }
-                break;
-
-              default:
-                throw 'Unrecognized router type';
-            }
-          } )( Shift[ module ].router[ eventType ] );
+              'exception':
+                   exception } );
+        }
     }
   }
 
-  var
-  serviceManager = new Manager;
-  serviceManager.set( 'event-bus', new EventBus );
+  // Declaring a global service manager
+  var serviceManager = new Manager;
 
+  // Attiching services
+  serviceManager.set( 'event-bus', new EventBus( Shift ) );
+
+  // Initiation process
   jQuery( document ).ready(
     function()
     {
       var exceptions = {};
 
+      // Bootstrapping all the modules that allows it
       for( var module in Shift )
         if( typeof Shift[ module ] == 'function' )
           try
@@ -171,15 +250,19 @@ function Shift()
             delete Shift[ module ];
           }
 
+      // If an excpetion occurred during the bootstrap process in any of the
+      // modules then this will trigger an error event
       for( var ns in exceptions )
         serviceManager.get( 'event-bus' ).trigger(
           'error.bootstrap',
-          { 'exception':
-              exception[ ns ],
+          { 'module':
+              ns,
 
-            'module':
-              ns } );
+            'exception':
+              exception[ ns ] } );
 
+      // Once the bootstrap process has finished, an event declaring that
+      // shift is ready is triggerd
       serviceManager.get( 'event-bus' ).trigger( 'shift.ready' );
     } );
 }

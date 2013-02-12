@@ -4,7 +4,7 @@
 
 *Dual licensed under the MIT and GPL version 3 licenses.*
 
-*Version: Beta 1*
+*Version: Beta 2*
 
 ## What's this
 This is a module based JavaScript framework using an MVP and event bus
@@ -285,6 +285,34 @@ Shift.Foo = function( serviceManager )
 ### What is happening in the above code snippet?
 We attached the same listener for both events and basicly loged it in the
 console.
+
+## Example of use, 7
+A simpler way to hook the "Example 6" is to use the asterix symbole
+
+```js
+Shift.Foo = function( serviceManager )
+{
+  this.router =
+  {
+    'error.*':
+      'error'
+  }
+
+  this.dispatcher =
+  {
+    error:
+      function( e )
+      {
+        if( window.console && window.console.log )
+          console.log( e );
+      }
+  }
+}
+```
+
+### What is happening in the above code snippet?
+We used the asterix symbole in the router to match any name in that part of the
+rout.
 
 ## What more
 Well there's a few other things in this frame, and even more to come. In
