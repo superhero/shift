@@ -220,7 +220,7 @@ function Shift()
                 eventType,
 
               'exception':
-                   exception } );
+                exception } );
         }
     }
   }
@@ -264,7 +264,7 @@ function Shift()
                 ns,
 
               'exception':
-                exception[ ns ] } );
+                exceptions[ ns ] } );
 
         // Once the bootstrap process has finished, an event declaring that
         // shift is ready is triggerd
