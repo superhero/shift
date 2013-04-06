@@ -26,10 +26,10 @@ function Shift()
      * @param service object The service
      * @type void
      */
-    this.set = function( namespace, service )
+    this.set = function(namespace, service)
     {
       namespace = namespace.toLowerCase();
-      container[ namespace ] = service;
+      container[namespace] = service;
     }
 
     /**
@@ -39,14 +39,14 @@ function Shift()
      * @exception 'Namespace undefined'
      * @return object
      */
-    this.get = function( namespace )
+    this.get = function(namespace)
     {
       namespace = namespace.toLowerCase();
 
-      if( !container[ namespace ] )
+      if(!container[namespace])
         throw 'Namespace undefined';
 
-      return container[ namespace ];
+      return container[namespace];
     }
 
     /**
@@ -64,9 +64,9 @@ function Shift()
      *
      * @type void
      */
-    this.remove = function( ns )
+    this.remove = function(ns)
     {
-      delete container[ ns ];
+      delete container[ns];
     }
 
     /**
@@ -75,11 +75,11 @@ function Shift()
      * @param namespace string The namespace
      * @return boolean
      */
-    this.has = function( namespace )
+    this.has = function(namespace)
     {
       namespace = namespace.toLowerCase();
 
-      return !! container[ namespace ];
+      return !! container[namespace];
     }
   }
 
@@ -88,7 +88,7 @@ function Shift()
    *
    * @class
    */
-  function Router( scope )
+  function Router(scope)
   {
     /**
      * Determines if the event matches the rout
@@ -109,18 +109,18 @@ function Shift()
      * | foo        | bar        | false  |
      * |------------|------------|--------|
      */
-    function match( rout, event )
+    function match(rout, event)
     {
       var match = true;
 
-      rout  = rout.split( '.' );
-      event = event.split( '.' );
+      rout = rout.split('.');
+      event = event.split('.');
 
-      if( rout.length != event.length )
+      if(rout.length != event.length)
         match = false;
 
-      for( var i = 0; match && i < event.length; i++ )
-        if( rout[ i ] != event[ i ] && '*' != rout[ i ] )
+      for(var i = 0; match && i < event.length; i++)
+        if(rout[i] != event[i] && '*' != rout[i])
           match = false;
 
       return match;
@@ -132,42 +132,41 @@ function Shift()
      * @exception 'Unrecognized router type'
      * @return array
      */
-    this.getRoutes = function( event )
+    this.getRoutes = function(event)
     {
       var actions = [];
 
-      for( var module in scope )
-        if( scope[ module ].router )
-          for( var rout in scope[ module ].router )
-            if( match( rout, event ) )
-              ( function callback( rout )
+      for(var module in scope)
+        if(scope[module].router)
+          for(var rout in scope[module].router)
+            if(match(rout, event))
+              (function callback(rout)
               {
-                switch( typeof rout )
+                switch(typeof rout)
                 {
                   case 'object':
-                    if( rout instanceof Array )
-                      for( var i = 0; i < rout.length; i++ )
-                        callback( rout[ i ] );
+                    if(rout instanceof Array)
+                      for(var i = 0; i < rout.length; i++)
+                        callback(rout[i]);
 
                     else
-                      for( var ns in rout )
-                        callback( rout[ ns ] );
+                      for(var ns in rout)
+                        callback(rout[ns]);
 
                     break;
 
                   case 'string':
                     actions.push(
-                      { 'module':
-                          module,
-
-                        'rout':
-                          rout } );
+                      { 
+                        'module': module,
+                        'rout': rout 
+                      });
                     break;
 
                   default:
                     throw 'Unrecognized router type';
                 }
-              } )( scope[ module ].router[ rout ] );
+              })(scope[module].router[rout]);
 
       return actions;
     }
@@ -178,9 +177,9 @@ function Shift()
    *
    * @class
    */
-  function EventBus( scope )
+  function EventBus(scope)
   {
-    var router = new Router( scope );
+    var router = new Router(scope);
 
     /**
      * Triggers an event
@@ -188,39 +187,32 @@ function Shift()
      * @exception 'Unrecognized router type'
      * @type void
      */
-    this.trigger = function trigger( eventType, data )
+    this.trigger = function trigger(eventType, data)
     {
-      var routes = router.getRoutes( eventType );
+      var routes = router.getRoutes(eventType);
 
-      for( var i = 0; i < routes.length; i++ )
+      for(var i = 0; i < routes.length; i++)
         try
         {
-          var module = Shift[ routes[ i ].module ];
+          var module = Shift[routes[i].module];
 
-          data = ( module.controller
-                && module.controller[ routes[ i ].rout ] )
-                 ? module.controller[ routes[ i ].rout ]( data )
+          data = ( module.controller && module.controller[routes[i].rout] )
+                 ? module.controller[routes[i].rout](data)
                  : data;
 
-          if( module.view
-           && module.view[ routes[ i ].rout ] )
-              module.view[ routes[ i ].rout ]( data );
+          if(module.view && module.view[routes[i].rout])
+            module.view[routes[i].rout](data);
         }
         catch( exception )
         {
           trigger(
             'error.dispatch',
-            { 'module':
-                routes[ i ].module,
-
-              'rout':
-                routes[ i ].rout,
-
-              'eventType':
-                eventType,
-
-              'exception':
-                exception } );
+            { 
+              'module': routes[i].module,
+              'rout': routes[i].rout,
+              'eventType': eventType,
+              'exception': exception 
+            });
         }
     }
   }
@@ -229,46 +221,45 @@ function Shift()
   var serviceManager = new Manager;
 
   // Attiching services
-  serviceManager.set( 'event-bus', new EventBus( Shift ) );
+  serviceManager.set('event-bus', new EventBus(Shift));
 
   // Initiation process
   var interval = setInterval(
     function()
     {
       // Once the document is ready we can initiate
-      if( document.readyState === 'complete' )
+      if(document.readyState === 'complete')
       {
-        clearInterval( interval );
+        clearInterval(interval);
 
         var exceptions = {};
 
         // Bootstrapping all the modules that allows it
-        for( var module in Shift )
-          if( typeof Shift[ module ] == 'function' )
+        for(var module in Shift)
+          if(typeof Shift[ module ] == 'function')
             try
             {
-              Shift[ module ] = new Shift[ module ]( serviceManager );
+              Shift[module] = new Shift[module](serviceManager);
             }
-            catch( exception )
+            catch(exception)
             {
-              exceptions[ module ] = exception;
-              delete Shift[ module ];
+              exceptions[module] = exception;
+              delete Shift[module];
             }
 
         // If an excpetion occurred during the bootstrap process in any of the
         // modules then this will trigger an error event
-        for( var ns in exceptions )
-          serviceManager.get( 'event-bus' ).trigger(
+        for(var ns in exceptions)
+          serviceManager.get('event-bus').trigger(
             'error.bootstrap',
-            { 'module':
-                ns,
-
-              'exception':
-                exceptions[ ns ] } );
+            { 
+              'module': ns,
+              'exception': exceptions[ns] 
+            });
 
         // Once the bootstrap process has finished, an event declaring that
         // shift is ready is triggerd
-        serviceManager.get( 'event-bus' ).trigger( 'shift.ready' );
+        serviceManager.get('event-bus').trigger('shift.ready');
       }
     },
     10 );
