@@ -58,26 +58,23 @@ Shift.Foo = function()
 {
   this.router =
   {
-    'shift.ready':
-      'ready'
+    'shift.ready': 'ready'
   }
 
   this.controller =
   {
-    ready:
-      function()
-      {
-        return 'foo';
-      }
+    ready: function()
+    {
+      return 'foo';
+    }
   }
 
   this.view =
   {
-    ready:
-      function( data )
-      {
-        alert( data );
-      }
+    ready: function(data)
+    {
+      alert(data);
+    }
   }
 }
 ```
@@ -100,17 +97,15 @@ Shift.Foo = function()
 {
   this.router =
   {
-    'shift.ready':
-      'ready'
+    'shift.ready': 'ready'
   }
 
   this.view =
   {
-    ready:
-      function()
-      {
-        alert( 'foo' );
-      }
+    ready: function()
+    {
+      alert('foo');
+    }
   }
 }
 ```
@@ -128,38 +123,33 @@ In the service manager we can locate the `event bus` that is used for
 triggering new events.
 
 ```js
-Shift.Foo = function( serviceManager )
+Shift.Foo = function(serviceManager)
 {
   this.router =
   {
-    'shift.ready':
-      'ready',
-
-    'foo.click':
-      'click'
+    'shift.ready': 'ready',
+    'foo.click': 'click'
   }
 
   this.controller =
   {
-    click:
-      function()
-      {
-        alert( 'clicked' );
-      }
+    click: function()
+    {
+      alert('clicked');
+    }
   }
 
   this.view =
   {
-    ready:
-      function()
-      {
-        // jQuery
-        $( '#foo' ).click(
-          function()
-          {
-            serviceManager.get( 'event-bus' ).trigger( 'foo.click' )
-          } );
-      }
+    ready: function()
+    {
+      // jQuery
+      $('#foo').click(
+        function()
+        {
+          serviceManager.get('event-bus').trigger('foo.click')
+        });
+    }
   }
 }
 ```
@@ -175,52 +165,49 @@ router. The rout is beeing resolved and an alert message is triggered.
 We could also provide the router with a list of routes
 
 ```js
-Shift.Foo = function( serviceManager )
+Shift.Foo = function(serviceManager)
 {
   this.router =
   {
-    'shift.ready':
-      'ready',
+    'shift.ready': 'ready',
 
     'foo.click':
-      [ 'foo',
+      [
+        'foo',
         'bar',
-        'baz' ]
+        'baz'
+      ]
   }
 
   this.controller =
   {
-    foo:
-      function()
-      {
-        alert( 'foo' );
-      },
+    foo: function()
+    {
+      alert('foo');
+    },
 
-    bar:
-      function()
-      {
-        alert( 'bar' );
-      },
+    bar: function()
+    {
+      alert('bar');
+    },
 
-    baz:
-      function()
-      {
-        alert( 'baz' );
-      }
+    baz: function()
+    {
+      alert('baz');
+    }
   }
 
   this.view =
   {
-    ready:
-      function()
-      {
-        // jQuery
-        $( '#foo' ).click(
-          function()
-          {
-            serviceManager.get( 'event-bus' ).trigger( 'foo.click' )
-          } );
-      }
+    ready: function()
+    {
+      // jQuery
+      $('#foo').click(
+        function()
+        {
+          serviceManager.get('event-bus').trigger('foo.click')
+        });
+    }
   }
 }
 ```
@@ -240,25 +227,21 @@ listens for theese error event.
 `error.dispatch` event, an endless loop will accure.
 
 ```js
-Shift.Foo = function( serviceManager )
+Shift.Foo = function(serviceManager)
 {
   this.router =
   {
-    'error.bootstrap':
-      'error',
-
-    'error.dispatch':
-      'error'
+    'error.bootstrap': 'error',
+    'error.dispatch': 'error'
   }
 
   this.controller =
   {
-    error:
-      function( e )
-      {
-        if( window.console && window.console.log )
-          console.log( e );
-      }
+    error: function(e)
+    {
+      if(window.console && window.console.log)
+        console.log(e);
+    }
   }
 }
 ```
@@ -271,22 +254,20 @@ console.
 A simpler way to hook the "Example 6" is to use the asterix symbole
 
 ```js
-Shift.Foo = function( serviceManager )
+Shift.Foo = function(serviceManager)
 {
   this.router =
   {
-    'error.*':
-      'error'
+    'error.*': 'error'
   }
 
   this.controller =
   {
-    error:
-      function( e )
-      {
-        if( window.console && window.console.log )
-          console.log( e );
-      }
+    error: function(e)
+    {
+      if(window.console && window.console.log)
+        console.log(e);
+    }
   }
 }
 ```
