@@ -197,9 +197,9 @@ function Shift()
         {
           var module = Shift[ routes[ i ].module ];
 
-          data = ( module.dispatcher
-                && module.dispatcher[ routes[ i ].rout ] )
-                 ? module.dispatcher[ routes[ i ].rout ]( data )
+          data = ( module.controller
+                && module.controller[ routes[ i ].rout ] )
+                 ? module.controller[ routes[ i ].rout ]( data )
                  : data;
 
           if( module.view

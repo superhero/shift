@@ -50,7 +50,7 @@ considered as the module bootstrap process.
 A shift module usually has the following skeleton:
 
 * router
-* dispatcher
+* controller
 * view:
 
 ```js
@@ -62,7 +62,7 @@ Shift.Foo = function()
       'ready'
   }
 
-  this.dispatcher =
+  this.controller =
   {
     ready:
       function()
@@ -88,11 +88,11 @@ onece all modules has been bootstrapped.
 When an event is triggered the `event bus` walks through all modules looking
 for a router. If an router is found the `event bus` will attempt to find a
 matching rout. If one is found it will attempt to resolve this to a matching
-action within the dispatcher and/or a matching view. The view retives data that
-the dispatcher returns.
+action within the controller and/or a matching view. The view retives data that
+the controller returns.
 
 ## Example of use, 3
-If you do not need view or dispatcher logic for the event you don't have to
+If you do not need view or controller logic for the event you don't have to
 declare this resolver.
 
 ```js
@@ -117,7 +117,7 @@ Shift.Foo = function()
 
 ### What is happening in the above code snippet?
 We left the rout with only a view logic to resolve. We could also do it the
-other way around and only use dispatcher logic.
+other way around and only use controller logic.
 
 ## Example of use, 4
 The module will be declared with a `service manager` if the framework is aloud
@@ -139,7 +139,7 @@ Shift.Foo = function( serviceManager )
       'click'
   }
 
-  this.dispatcher =
+  this.controller =
   {
     click:
       function()
@@ -188,7 +188,7 @@ Shift.Foo = function( serviceManager )
         'baz' ]
   }
 
-  this.dispatcher =
+  this.controller =
   {
     foo:
       function()
@@ -251,7 +251,7 @@ Shift.Foo = function( serviceManager )
       'error'
   }
 
-  this.dispatcher =
+  this.controller =
   {
     error:
       function( e )
@@ -279,7 +279,7 @@ Shift.Foo = function( serviceManager )
       'error'
   }
 
-  this.dispatcher =
+  this.controller =
   {
     error:
       function( e )
