@@ -115,15 +115,15 @@ We left the rout with only a view logic to resolve. We could also do it the
 other way around and only use controller logic.
 
 ## Example of use, 4
-The module will be declared with a `service manager` if the framework is aloud
-to bootstrap the module. The service manager is  where you can store global
+The module will be declared with a `service locator` if the framework is aloud
+to bootstrap the module. The service locator is  where you can store global
 services you wish to use in all or more then one module.
 
-In the service manager we can locate the `event bus` that is used for
+In the service locator we can locate the `event bus` that is used for
 triggering new events.
 
 ```js
-Shift.Foo = function(serviceManager)
+Shift.Foo = function(serviceLocator)
 {
   this.router =
   {
@@ -147,7 +147,7 @@ Shift.Foo = function(serviceManager)
       $('#foo').click(
         function()
         {
-          serviceManager.get('event-bus').trigger('foo.click')
+          serviceLocator.get('event-bus').trigger('foo.click')
         });
     }
   }
@@ -155,7 +155,7 @@ Shift.Foo = function(serviceManager)
 ```
 
 ### What is happening in the above code snippet?
-Here we first have the bootrap process reciving the `service manager`. We rout
+Here we first have the bootrap process reciving the `service locator`. We rout
 the ordinary `shift.ready` event to a view where we attach a listener that
 triggers the event `foo.click`. This event is triggered globaly and can be
 picked up by any module. We have one rout defined for this in this module
@@ -165,7 +165,7 @@ router. The rout is beeing resolved and an alert message is triggered.
 We could also provide the router with a list of routes
 
 ```js
-Shift.Foo = function(serviceManager)
+Shift.Foo = function(serviceLocator)
 {
   this.router =
   {
@@ -205,7 +205,7 @@ Shift.Foo = function(serviceManager)
       $('#foo').click(
         function()
         {
-          serviceManager.get('event-bus').trigger('foo.click')
+          serviceLocator.get('event-bus').trigger('foo.click')
         });
     }
   }
@@ -227,7 +227,7 @@ listens for theese error event.
 `error.dispatch` event, an endless loop will accure.
 
 ```js
-Shift.Foo = function(serviceManager)
+Shift.Foo = function(serviceLocator)
 {
   this.router =
   {
@@ -235,7 +235,7 @@ Shift.Foo = function(serviceManager)
     'error.dispatch': 'error'
   }
 
-  this.controller =
+  this.view =
   {
     error: function(e)
     {
@@ -254,14 +254,14 @@ console.
 A simpler way to hook the "Example 6" is to use the asterix symbole
 
 ```js
-Shift.Foo = function(serviceManager)
+Shift.Foo = function(serviceLocator)
 {
   this.router =
   {
     'error.*': 'error'
   }
 
-  this.controller =
+  this.view =
   {
     error: function(e)
     {
