@@ -1,6 +1,6 @@
 /*
   Shift - Javascript - Framework
-  Copyright (C) 2012  Erik Landvall
+  Copyright (C) 2013  Erik Landvall
   Dual licensed under the MIT and GPL version 3
 */
 
