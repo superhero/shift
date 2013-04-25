@@ -1,4 +1,4 @@
-/*!
+/*
   Shift - Javascript - Framework
   Copyright (C) 2013  Erik Landvall
   Dual licensed under the MIT and GPL version 3
@@ -226,9 +226,12 @@ function Shift()
           
           // Preventing an eternal loop
           if(eventType == 'error.dispatch')
-            throw 'Eternal loop caused by Event: "' + eventType + '" ' +
-                  'in: Module: "' + e.Module + '" ' +
-                  'Rout: "' + e.Rout + '"';
+            throw 'Eternal loop found in Shift.\n' + 
+                  '\n' + 
+                  'Event: "'     + eventType  + '"\n' +
+                  'Module: "'    + e.Module   + '"\n' +
+                  'Rout: "'      + e.Rout     + '"\n' + 
+                  'Exception: "' + exception  + '"';
           
           // Trigger a user defined exception handler - preferably a logger
           else
