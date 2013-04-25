@@ -1,4 +1,4 @@
-/*
+/*!
   Shift - Javascript - Framework
   Copyright (C) 2013  Erik Landvall
   Dual licensed under the MIT and GPL version 3
