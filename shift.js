@@ -216,21 +216,23 @@ function Shift()
         catch(exception)
         {
           // Composes an exception with more information
-          exception = 
+          var e = 
           { 
-            'module': routes[i].module,
-            'rout': routes[i].rout,
-            'eventType': eventType,
-            'exception': exception 
+            'Module': routes[i].module,
+            'Rout': routes[i].rout,
+            'Event': eventType,
+            'Exception': exception 
           };
           
           // Preventing an eternal loop
           if(eventType == 'error.dispatch')
-            throw exception;
+            throw 'Eternal loop caused by Event: "' + eventType + '" ' +
+                  'in: Module: "' + e.Module + '" ' +
+                  'Rout: "' + e.Rout + '"';
           
           // Trigger a user defined exception handler - preferably a logger
           else
-            trigger('error.dispatch', exception);
+            trigger('error.dispatch', e);
         }
     }
   }
@@ -281,8 +283,8 @@ function Shift()
       serviceLocator.get('event-bus').trigger(
         'error.bootstrap',
         {
-          'module': ns,
-          'exception': exceptions[ns] 
+          'Module': ns,
+          'Exception': exceptions[ns] 
         });
 
     // Once the bootstrap process has finished, an event declaring that
