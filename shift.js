@@ -5,14 +5,12 @@
 */
 
 /**
- * @type Shift
+ * @returns {Shift}
  */
 function Shift()
 {
   /**
-   * A manager mange services
-   *
-   * @class
+   * @returns {Shift.Manager}
    */
   function Manager()
   {
@@ -21,10 +19,10 @@ function Shift()
     /**
      * Set a service that can be acceced through the defined namespace.
      *
-     * @param namespace string The desired namespace, will overwrite if
+     * @param {String} namespace The desired namespace, will overwrite if
      * namespace already exists.
-     * @param service object The service
-     * @type void
+     * @param {Object} service The service
+     * @returns {undefined}
      */
     this.set = function(namespace, service)
     {
@@ -35,9 +33,9 @@ function Shift()
     /**
      * Used to retrieve a service from a certain namespace
      *
-     * @param namespace string The namespace
-     * @exception 'Namespace undefined'
-     * @return object
+     * @param {String} namespace The namespace
+     * @returns {Object}
+     * @throws {Namespace undefined}
      */
     this.get = function(namespace)
     {
@@ -52,7 +50,7 @@ function Shift()
     /**
      * Used to retrieve all availible services
      *
-     * @return object
+     * @returns {Object}
      */
     this.getAll = function()
     {
@@ -62,7 +60,7 @@ function Shift()
     /**
      * Is used for removing a service from the manager
      *
-     * @type void
+     * @returns {undefined}
      */
     this.remove = function(ns)
     {
@@ -72,8 +70,8 @@ function Shift()
     /**
      * Returns if a namespace is set or not
      *
-     * @param namespace string The namespace
-     * @return boolean
+     * @param {String} namespace The namespace
+     * @returns {Boolean}
      */
     this.has = function(namespace)
     {
@@ -82,13 +80,14 @@ function Shift()
       return !! container[namespace];
     }
   }
+  
 
   /**
    * The router provides matching routes, it doesn't dispatch them.
-   *
-   * @class
+   * 
+   * @returns {Shift.Router}
    */
-  function Router(scope)
+  function Router()
   {
     /**
      * Determines if the event matches the rout
@@ -108,6 +107,10 @@ function Shift()
      * | foo.bar    | foo        | false  |
      * | foo        | bar        | false  |
      * |------------|------------|--------|
+     * 
+     * @param {String} rout The rout to compare to
+     * @param {String} event The event to compare with
+     * @returns {Boolean}
      */
     function match(rout, event)
     {
@@ -125,14 +128,18 @@ function Shift()
 
       return match;
     }
-
+    
     /**
      * Returns all matching routes
-     *
-     * @exception 'Unrecognized router type'
-     * @return array
+     * 
+     * @param {String} event The event that should be matched agains the routes
+     * in the current scope
+     * @param {Object} scope A container with the relevenat modules to search
+     * for routes in.
+     * @returns {Array}
+     * @throws {Unrecognized router type}
      */
-    this.getRoutes = function(event)
+    this.getRoutes = function(event, scope)
     {
       var actions = [];
 
@@ -171,26 +178,30 @@ function Shift()
       return actions;
     }
   }
-
+  
   /**
-   * The event bus is used for triggering events in the modules
-   *
-   * @class
+   * @param {Object} scope A container of the modules that should be affected 
+   * when an event is triggered 
+   * @returns {Shift.EventBus}
    */
   function EventBus(scope)
   {
-    var router = new Router(scope);
+    var router = new Router();
 
     /**
      * Triggers an event
      *
-     * @exception 'Unrecognized router type'
-     * @type void
+     * @param {String} eventType The event type name.
+     * @param {mix} data What ever that is sent when the event is triggered, if
+     * anything at all.
+     * @returns {undefined}
+     * @throws {Unrecognized router type}
+     * @throws {Eternal loop found in Shift..}
      */
     this.trigger = function trigger(eventType, data)
     {
       // Retrives matching routes
-      var routes = router.getRoutes(eventType);
+      var routes = router.getRoutes(eventType, scope);
 
       // Looping through all matched routes
       for(var i = 0; i < routes.length; i++)
