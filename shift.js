@@ -187,6 +187,72 @@ function Shift()
   function EventBus(scope)
   {
     var router = new Router();
+    
+    /**
+     * This couses the application to work asynchronously through diffrent
+     * event. It should also help queuing up rendering work in some browsers.
+     * 
+     * @param {Object} route Where the route information is held.
+     * @param {String} eventType The type of event.
+     * @param {mix} data Anything that is passed from the trigger.
+     * @param {Shift.EventBus} eventBus The event bus that we can use to 
+     * trigger an error if so is needed.
+     * @returns {Shift.EventBus.Thread}
+     */
+    function Thread(route, eventType, data, eventBus)
+    {
+      this.run = function()
+      {
+        setTimeout(this.dispatch, 0);
+      }
+      
+      this.dispatch = function()
+      {
+        try
+        {
+          // A handle to the module we are about to dispatch from
+          var module = Shift[route.module];
+
+          // If the controller existes, the return value from this will be 
+          // passed on to the view. 
+          // If no controller existes, the data passed through the event will
+          // be passed on to the view.
+          data = ( module.controller && module.controller[route.rout] )
+                 ? module.controller[route.rout](data)
+                 : data;
+
+          // If a view existes it will be rendered with the data passed on.
+          if(module.view && module.view[route.rout])
+            module.view[route.rout](data);
+        }
+
+        // Preventing an eception in the dispatch proces to couse a melt-down
+        catch(exception)
+        {
+          // Composes an exception with more information
+          var e = 
+          { 
+            'Module': route.module,
+            'Rout': route.rout,
+            'Event': eventType,
+            'Exception': exception 
+          };
+
+          // Preventing an eternal loop
+          if(eventType == 'error.dispatch')
+            throw 'Eternal loop found in Shift.\n' + 
+                  '\n' + 
+                  'Event: "'     + eventType  + '"\n' +
+                  'Module: "'    + e.Module   + '"\n' +
+                  'Rout: "'      + e.Rout     + '"\n' + 
+                  'Exception: "' + exception  + '"';
+
+          // Trigger a user defined exception handler - preferably a logger
+          else
+            eventBus.trigger('error.dispatch', e);
+        }
+      }
+    }
 
     /**
      * Triggers an event
@@ -198,56 +264,14 @@ function Shift()
      * @throws {Unrecognized router type}
      * @throws {Eternal loop found in Shift..}
      */
-    this.trigger = function trigger(eventType, data)
+    this.trigger = function(eventType, data)
     {
       // Retrives matching routes
       var routes = router.getRoutes(eventType, scope);
 
       // Looping through all matched routes
       for(var i = 0; i < routes.length; i++)
-        try
-        {
-          // A handle to the module we are about to dispatch from
-          var module = Shift[routes[i].module];
-
-          // If the controller existes, the return value from this will be 
-          // passed on to the view. 
-          // If no controller existes, the data passed through the event will be
-          // passed on to the view.
-          data = ( module.controller && module.controller[routes[i].rout] )
-                 ? module.controller[routes[i].rout](data)
-                 : data;
-
-          // If a view existes it will be rendered with the data passed on.
-          if(module.view && module.view[routes[i].rout])
-            module.view[routes[i].rout](data);
-        }
-        
-        // Preventing an eception in the dispatch proces to couse a melt-down
-        catch(exception)
-        {
-          // Composes an exception with more information
-          var e = 
-          { 
-            'Module': routes[i].module,
-            'Rout': routes[i].rout,
-            'Event': eventType,
-            'Exception': exception 
-          };
-          
-          // Preventing an eternal loop
-          if(eventType == 'error.dispatch')
-            throw 'Eternal loop found in Shift.\n' + 
-                  '\n' + 
-                  'Event: "'     + eventType  + '"\n' +
-                  'Module: "'    + e.Module   + '"\n' +
-                  'Rout: "'      + e.Rout     + '"\n' + 
-                  'Exception: "' + exception  + '"';
-          
-          // Trigger a user defined exception handler - preferably a logger
-          else
-            trigger('error.dispatch', e);
-        }
+        new Thread(routes[i], eventType, data, this).run();
     }
   }
 

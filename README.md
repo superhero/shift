@@ -213,7 +213,7 @@ Shift.Foo = function(serviceLocator)
 ```
 
 ### What is happening in the above code snippet?
-We added a list of routes that all got triggered in the order they are listed.
+We added a list of routes that all got triggered.
 
 ## Example of use, 6
 For stability in your code we don't wont one modules logic breaking the hole
@@ -224,7 +224,7 @@ If we wish to log this in some way we could create an exception module that
 listens for theese error event.
 
 **Warning** If an exception accures in the resolved rout for the
-`error.dispatch` event, an endless loop will accure.
+`error.dispatch` event, a real exception will be trown breaking that thread.
 
 ```js
 Shift.Foo = function(serviceLocator)
