@@ -20,10 +20,11 @@ up in spaghetti code ones the projects grew.
 ## How it works
 Every module should follow the
 [MVP](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter)
-(Model-View-Presenter) pattern.
+(Model-View-Presenter) or 
+[MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)
+(Model-View-Controller) pattern.
 
 **See**:
- * [Passive View](http://martinfowler.com/eaaDev/PassiveScreen.html)
  * [Supervising Controller](http://martinfowler.com/eaaDev/SupervisingPresenter.html)
 
 You design the modules to operate independently. When you need them to
