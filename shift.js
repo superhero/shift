@@ -192,11 +192,11 @@ function Shift()
      * This couses the application to work asynchronously through diffrent
      * event. It should also help queuing up rendering work in some browsers.
      * 
-     * @param Object route            Where the route information is held.
-     * @param String eventType        The type of event.
-     * @param mix    data             Anything that is passed from the trigger.
-     * @param Shift.EventBus eventBus The event bus that we can use to trigger
-     *                                an error if so is needed.
+     * @param Object         route     Where the route information is held.
+     * @param String         eventType The type of event.
+     * @param mix            data      Anything that is passed from the trigger.
+     * @param Shift.EventBus eventBus  The event bus that we can use to trigger
+     *                                 an error if so is needed.
      * 
      * @returns Shift.EventBus.Thread
      */
@@ -262,7 +262,7 @@ function Shift()
      * @param mix    data      What ever that is sent when the event is 
      *                         triggered, if anything at all.
      * 
-     * @returns undefined
+     * @returns Shift.EventBus
      * @throws Unrecognized router type
      * @throws Eternal loop found in Shift..
      */
@@ -274,6 +274,8 @@ function Shift()
       // Looping through all matched routes
       for(var i = 0; i < routes.length; i++)
         new Thread(routes[i], eventType, data, this).run();
+      
+      return this;
     };
   }
 
