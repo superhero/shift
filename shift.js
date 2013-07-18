@@ -27,7 +27,7 @@ function Shift()
     {
       namespace = namespace.toLowerCase();
       container[namespace] = service;
-    }
+    };
 
     /**
      * Used to retrieve a service from a certain namespace
@@ -44,7 +44,7 @@ function Shift()
         throw 'Namespace undefined';
 
       return container[namespace];
-    }
+    };
 
     /**
      * Used to retrieve all availible services
@@ -54,7 +54,7 @@ function Shift()
     this.getAll = function()
     {
       return container;
-    }
+    };
 
     /**
      * Is used for removing a service from the manager
@@ -62,7 +62,7 @@ function Shift()
     this.remove = function(ns)
     {
       delete container[ns];
-    }
+    };
 
     /**
      * Returns if a namespace is set or not
@@ -75,7 +75,7 @@ function Shift()
       namespace = namespace.toLowerCase();
 
       return !! container[namespace];
-    }
+    };
   }
   
 
@@ -175,7 +175,7 @@ function Shift()
               })(scope[module].router[rout]);
 
       return actions;
-    }
+    };
   }
   
   /**
@@ -205,7 +205,7 @@ function Shift()
       this.run = function()
       {
         setTimeout(this.dispatch, 0);
-      }
+      };
       
       this.dispatch = function()
       {
@@ -252,7 +252,7 @@ function Shift()
           else
             eventBus.trigger('error.dispatch', e);
         }
-      }
+      };
     }
 
     /**
@@ -274,7 +274,7 @@ function Shift()
       // Looping through all matched routes
       for(var i = 0; i < routes.length; i++)
         new Thread(routes[i], eventType, data, this).run();
-    }
+    };
   }
 
   // Declaring a global service manager
