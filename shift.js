@@ -5,12 +5,12 @@
 */
 
 /**
- * @returns {Shift}
+ * @returns Shift
  */
 function Shift()
 {
   /**
-   * @returns {Shift.Manager}
+   * @returns Shift.Manager
    */
   function Manager()
   {
@@ -19,10 +19,9 @@ function Shift()
     /**
      * Set a service that can be acceced through the defined namespace.
      *
-     * @param {String} namespace The desired namespace, will overwrite if
-     * namespace already exists.
-     * @param {Object} service The service
-     * @returns {undefined}
+     * @param String namespace The desired namespace, will overwrite if
+     *                         namespace already exists.
+     * @param Object service The service
      */
     this.set = function(namespace, service)
     {
@@ -33,9 +32,9 @@ function Shift()
     /**
      * Used to retrieve a service from a certain namespace
      *
-     * @param {String} namespace The namespace
-     * @returns {Object}
-     * @throws {Namespace undefined}
+     * @param String namespace The namespace
+     * @returns Object
+     * @throws Namespace undefined
      */
     this.get = function(namespace)
     {
@@ -50,7 +49,7 @@ function Shift()
     /**
      * Used to retrieve all availible services
      *
-     * @returns {Object}
+     * @returns Object
      */
     this.getAll = function()
     {
@@ -59,8 +58,6 @@ function Shift()
 
     /**
      * Is used for removing a service from the manager
-     *
-     * @returns {undefined}
      */
     this.remove = function(ns)
     {
@@ -70,8 +67,8 @@ function Shift()
     /**
      * Returns if a namespace is set or not
      *
-     * @param {String} namespace The namespace
-     * @returns {Boolean}
+     * @param String namespace The namespace
+     * @returns Boolean
      */
     this.has = function(namespace)
     {
@@ -85,7 +82,7 @@ function Shift()
   /**
    * The router provides matching routes, it doesn't dispatch them.
    * 
-   * @returns {Shift.Router}
+   * @returns Shift.Router
    */
   function Router()
   {
@@ -108,9 +105,10 @@ function Shift()
      * | foo        | bar        | false  |
      * |------------|------------|--------|
      * 
-     * @param {String} rout The rout to compare to
-     * @param {String} event The event to compare with
-     * @returns {Boolean}
+     * @param String rout  The rout to compare to
+     * @param String event The event to compare with
+     * 
+     * @returns Boolean
      */
     function match(rout, event)
     {
@@ -132,12 +130,13 @@ function Shift()
     /**
      * Returns all matching routes
      * 
-     * @param {String} event The event that should be matched agains the routes
-     * in the current scope
-     * @param {Object} scope A container with the relevenat modules to search
-     * for routes in.
-     * @returns {Array}
-     * @throws {Unrecognized router type}
+     * @param String event The event that should be matched agains the routes
+     *                     in the current scope
+     * @param Object scope A container with the relevenat modules to search
+     *                     for routes in.
+     *                     
+     * @returns Array
+     * @throws Unrecognized router type
      */
     this.getRoutes = function(event, scope)
     {
@@ -180,9 +179,10 @@ function Shift()
   }
   
   /**
-   * @param {Object} scope A container of the modules that should be affected 
-   * when an event is triggered 
-   * @returns {Shift.EventBus}
+   * @param Object scope A container of the modules that should be affected 
+   *                     when an event is triggered 
+   *
+   * @returns Shift.EventBus
    */
   function EventBus(scope)
   {
@@ -192,12 +192,13 @@ function Shift()
      * This couses the application to work asynchronously through diffrent
      * event. It should also help queuing up rendering work in some browsers.
      * 
-     * @param {Object} route Where the route information is held.
-     * @param {String} eventType The type of event.
-     * @param {mix} data Anything that is passed from the trigger.
-     * @param {Shift.EventBus} eventBus The event bus that we can use to 
-     * trigger an error if so is needed.
-     * @returns {Shift.EventBus.Thread}
+     * @param Object route            Where the route information is held.
+     * @param String eventType        The type of event.
+     * @param mix    data             Anything that is passed from the trigger.
+     * @param Shift.EventBus eventBus The event bus that we can use to trigger
+     *                                an error if so is needed.
+     * 
+     * @returns Shift.EventBus.Thread
      */
     function Thread(route, eventType, data, eventBus)
     {
@@ -257,12 +258,13 @@ function Shift()
     /**
      * Triggers an event
      *
-     * @param {String} eventType The event type name.
-     * @param {mix} data What ever that is sent when the event is triggered, if
-     * anything at all.
-     * @returns {undefined}
-     * @throws {Unrecognized router type}
-     * @throws {Eternal loop found in Shift..}
+     * @param String eventType The event type name.
+     * @param mix    data      What ever that is sent when the event is 
+     *                         triggered, if anything at all.
+     * 
+     * @returns undefined
+     * @throws Unrecognized router type
+     * @throws Eternal loop found in Shift..
      */
     this.trigger = function(eventType, data)
     {
