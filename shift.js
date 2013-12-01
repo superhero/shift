@@ -99,7 +99,7 @@ function Shift()
      * | foo.*      | foo.bar    | true   |
      * | *          | *          | true   |
      * | foo.*      | foo.*      | true   |
-     * | foo.bar    | foo.*      | false  |
+     * | foo.bar    | foo.*      | true   |
      * | foo        | foo.bar    | false  |
      * | foo.bar    | foo        | false  |
      * | foo        | bar        | false  |
@@ -121,7 +121,7 @@ function Shift()
         match = false;
 
       for(var i = 0; match && i < event.length; i++)
-        if(rout[i] !== event[i] && '*' !== rout[i])
+        if(rout[i] !== event[i] && '*' !== rout[i] && '*' !== event[i])
           match = false;
 
       return match;
