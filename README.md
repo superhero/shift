@@ -4,7 +4,7 @@
 
 *Dual licensed under the MIT and GPL version 3 licenses.*
 
-*Version: Beta 2*
+*Version: 1.0.0*
 
 ## What is this
 This is a module based JavaScript framework using the MVP pattern and an
@@ -20,7 +20,7 @@ up in spaghetti code ones the projects grew.
 ## How it works
 Every module should follow the
 [MVP](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter)
-(Model-View-Presenter) or 
+(Model-View-Presenter) or
 [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)
 (Model-View-Controller) pattern.
 
